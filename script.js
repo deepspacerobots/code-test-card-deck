@@ -178,11 +178,32 @@ class CardDeck {
 const deck = new CardDeck(".deck", ".hand");
 
 // Take a look at the deck object and its methods.
+console.log(deck);
 
 // get query parameters
 const queryString = window.location.search;
 
-if (queryString.includes("card=")) {
+// names of parameters
+const queryParams = {
+    cards: getCards,
+    suits: getSuits,
+    ranks: getRanks,
+    limit: setLimit,
+};
+
+// if query parameters are present call functions
+if (queryString) {
+    for (const key in queryParams) {
+        if (queryString.includes(key)) {
+            queryParams[key](deck, queryString);
+        }
+        if (queryString.includes("sorted")) {
+            deck.sort();
+        }
+    }
+}
+
+function getCards(deck, queryString) {
     // regex pattern
     const re = /([a-z][-][\d])+/g;
 
@@ -195,7 +216,7 @@ if (queryString.includes("card=")) {
     });
 }
 
-if (queryString.includes("suits=")) {
+function getSuits(deck, queryString) {
     // regex pattern words separated by +
     const re = /([a-z]+)+/g;
 
@@ -208,11 +229,16 @@ if (queryString.includes("suits=")) {
     // filter out cards in possible cards
     deck.filter("suit", newList);
 
+    // // if queryString includes sorted sort cards
+    // if (queryString.includes("sorted")) {
+    //     deck.sort();
+    // }
+
     // draw possible cards
     deck.drawFiltered();
 }
 
-if (queryString.includes("ranks=")) {
+function getRanks(deck, queryString) {
     // regex pattern for numbers
     const re = /ranks=[\d+\d]+&?/g;
 
@@ -239,16 +265,26 @@ if (queryString.includes("ranks=")) {
         const filteredCards = deck.hand.filter((card) => !numbers.includes(card.rank));
         //loop through cards and discard other cards
         filteredCards.forEach((card) => deck.discard(card.id));
+
+        // if queryString includes sorted sort cards
+        if (queryString.includes("sorted")) {
+            deck.sort();
+        }
     } else if (deck.hand.length == 0) {
         // filter cards by rank and change strings to numbers
         deck.filter("rank", numbers);
+
+        // if queryString includes sorted sort cards
+        if (queryString.includes("sorted")) {
+            deck.sort();
+        }
 
         // draw possible cards
         deck.drawFiltered();
     }
 }
 
-if (queryString.includes("limit=")) {
+function setLimit(deck, queryString) {
     // regex pattern for numbers
     const re = /limit=(\d+)/g;
 
@@ -264,4 +300,9 @@ if (queryString.includes("limit=")) {
             deck.discard(card.id);
         }
     });
+}
+
+// sorts the cards in hand
+function sortCards(deck) {
+    deck.sort();
 }
