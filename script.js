@@ -174,6 +174,20 @@ class CardDeck {
 //  Your code goes below this comment.
 /*------------------------------------------*/
 
+//Here i create a new object using querystring
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+// Here i am extracting parameters and their values
+const cardsParam = urlParams.get('cards');
+const suitsParam = urlParams.get('suits');
+const ranksParam = urlParams.get('ranks');
+const limitParam = urlParams.get('limit');
+
+//Drawing the cards that match the parameters
+//
+//
+
 // Create a new card deck.
 const deck = new CardDeck(".deck", ".hand");
 
